@@ -16,6 +16,7 @@ abstract class ChildTreeNode<T extends JComponent, S extends ChildTreeNode<T, S>
 	@Nullable Integer width;
 	@Nullable Integer height;
 	@Nullable Consumer<T> onBuild;
+	@Nullable String name;
 
 	public S setBackground(Color colour) {
 		this.background = colour;
@@ -48,6 +49,11 @@ abstract class ChildTreeNode<T extends JComponent, S extends ChildTreeNode<T, S>
 		return this.getSelf();
 	}
 
+	public S setName(String name) {
+		this.name = name;
+		return this.getSelf();
+	}
+
 	@Override
 	public final T build() {
 		T result = this.createBuiltComponent();
@@ -73,6 +79,7 @@ abstract class ChildTreeNode<T extends JComponent, S extends ChildTreeNode<T, S>
 		if (this.border != null) component.setBorder(this.border);
 		if (this.font != null) component.setFont(this.font);
 		if (this.width != null) component.setSize(this.width, this.height);
+		if (this.name != null) component.setName(this.name);
 	}
 
 	abstract T createBuiltComponent();

@@ -1,8 +1,10 @@
 package shuttlegui.system;
 
 import java.awt.BorderLayout;
+import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
@@ -16,6 +18,7 @@ public class PanelNode extends BranchingTreeNode<JPanel, PanelNode> {
 	}
 
 	@Nullable private final String name;
+	private Supplier<BorderLayout> borderLayout = BorderLayout::new;
 
 	/**
 	 * @deprecated use {@link PanelNode#child(ChildTreeNode, BorderLayout)}
@@ -28,6 +31,17 @@ public class PanelNode extends BranchingTreeNode<JPanel, PanelNode> {
 
 	public <U extends JComponent, N extends ChildTreeNode<U, N>> PanelNode child(N node, String layout) {
 		this.children.add(new ConfiguredBorderNode<>(node, layout));
+		return this;
+	}
+
+	@Override
+	@Deprecated
+	public PanelNode setName(String name) {
+		return super.setName(name);
+	}
+
+	public PanelNode setBorderLayout(Supplier<BorderLayout> supplier) {
+		this.borderLayout = supplier;
 		return this;
 	}
 
@@ -48,10 +62,11 @@ public class PanelNode extends BranchingTreeNode<JPanel, PanelNode> {
 
 	@Override
 	JPanel createBuiltComponent() {
-		JPanel result = new JPanel(new BorderLayout());
+		JPanel result = new JPanel(this.borderLayout.get());
 
 		if (this.name != null) {
 			result.setName(this.name);
+			result.setBorder(BorderFactory.createTitledBorder(this.name));
 		}
 
 		return result;
