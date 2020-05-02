@@ -8,7 +8,7 @@ import javax.annotation.Nullable;
 import javax.swing.JComponent;
 import javax.swing.border.Border;
 
-abstract class ComponentTreeNode<T extends JComponent, S extends ComponentTreeNode<T, S>> implements TreeNode<T, S> {
+abstract class ChildTreeNode<T extends JComponent, S extends ChildTreeNode<T, S>> implements TreeNode<T, S> {
 	@Nullable Color background;
 	@Nullable Color foreground;
 	@Nullable Border border;
@@ -61,6 +61,13 @@ abstract class ComponentTreeNode<T extends JComponent, S extends ComponentTreeNo
 	}
 
 	void onComponentBuild(T component) {
+		this.addDecorations(component);
+	}
+
+	/**
+	 * Called by the default implementation of {@link ChildTreeNode#onComponentBuild}
+	 */
+	void addDecorations(T component) {
 		if (this.background != null) component.setBackground(this.background);
 		if (this.foreground != null) component.setForeground(this.foreground);
 		if (this.border != null) component.setBorder(this.border);

@@ -2,7 +2,7 @@ package shuttlegui.system;
 
 import javax.swing.JEditorPane;
 
-public class EditorPaneNode extends ComponentTreeNode<JEditorPane, EditorPaneNode> {
+public class EditorPaneNode extends ChildTreeNode<JEditorPane, EditorPaneNode> {
 	private boolean editable = false;
 
 	public EditorPaneNode setEditable(boolean editable) {

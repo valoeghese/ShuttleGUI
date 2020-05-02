@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 import javax.annotation.Nullable;
 import javax.swing.JComponent;
 
-abstract class ExecutableNode<T extends JComponent, S extends ExecutableNode<T, S>> extends ComponentTreeNode<T, S> {
+abstract class ExecutableNode<T extends JComponent, S extends ExecutableNode<T, S>> extends ChildTreeNode<T, S> {
 	@Nullable private ActionListener executes;
 
 	public S executes(ActionListener r) {

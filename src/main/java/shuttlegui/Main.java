@@ -1,5 +1,6 @@
 package shuttlegui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -18,12 +19,11 @@ public class Main {
 	private static void createLaunch() {
 		WindowManager.dispatch(window -> window
 				.child(new PanelNode("Workspace Launch")
-						.onBuild()
 						.child(new TextFieldNode(20)
 								.onBuild(field -> {
 									field.setForeground(Color.GRAY);
 									field.addFocusListener(new PlaceholderTextFocusListener(field, "Workspace Name"));
-								}))));
+								}), BorderLayout.CENTER)));
 	}
 
 	private static class PlaceholderTextFocusListener implements FocusListener {

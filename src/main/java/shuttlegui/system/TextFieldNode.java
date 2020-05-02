@@ -2,7 +2,7 @@ package shuttlegui.system;
 
 import javax.swing.JTextField;
 
-public class TextFieldNode extends ComponentTreeNode<JTextField, TextFieldNode> {
+public class TextFieldNode extends ChildTreeNode<JTextField, TextFieldNode> {
 	public TextFieldNode(int columns) {
 		this.columns = columns;
 	}

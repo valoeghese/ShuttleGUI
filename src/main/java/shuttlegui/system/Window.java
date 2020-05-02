@@ -1,5 +1,7 @@
 package shuttlegui.system;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,14 +16,9 @@ public class Window implements TreeNode<JFrame, Window> {
 
 	private int width = 300;
 	private int height = 300;
-	private List<TreeNode<?,?>> children = new ArrayList<>();
+	private List<ChildTreeNode<?,?>> children = new ArrayList<>();
 
-	public <U extends JComponent, N extends BranchingTreeNode<U, N>> Window child(N node) {
-		this.children.add(node);
-		return this;
-	}
-
-	public <U extends JComponent, N extends ComponentTreeNode<U, N>> Window child(N node) {
+	public <U extends JComponent, N extends ChildTreeNode<U, N>> Window child(N node) {
 		this.children.add(node);
 		return this;
 	}
@@ -39,6 +36,12 @@ public class Window implements TreeNode<JFrame, Window> {
 		BranchingTreeNode.applyWidgets(next::add, this.children);
 		top.add(next);
 		top.setSize(this.width, this.height);
+		top.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				System.exit(0); // don't even ask why I have to add this. blame java
+			}
+		});
 		return top;
 	}
 }
