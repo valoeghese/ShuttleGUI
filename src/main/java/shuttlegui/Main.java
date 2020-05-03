@@ -21,8 +21,9 @@ public class Main {
 		createLaunch();
 	}
 
-	public static JTextField launcherTextEntry;
-	public static JFrame currentFrame;
+	private static JTextField launcherTextEntry;
+	private static JFrame currentFrame;
+	private static PlaceholderTextFocusListener ptfl;
 
 	private static void createLaunch() {
 		WindowManager.dispatch(window -> window
@@ -47,26 +48,29 @@ public class Main {
 						.child(new TextFieldNode(20)
 								.onBuild(field -> {
 									field.setForeground(Color.GRAY);
-									field.addFocusListener(new PlaceholderTextFocusListener(field, "name"));
+									field.addFocusListener(ptfl = new PlaceholderTextFocusListener(field, "name"));
 									launcherTextEntry = field;
 								}), BorderLayout.CENTER)
 						.child(new ButtonNode("Launch")
 								.executes(event -> {
-									launcherTextEntry.requestFocus();
-									String workspace = launcherTextEntry.getText().trim();
+									String workspace = ptfl.noEntry ? "" : launcherTextEntry.getText().trim();
 
 									if (!workspace.isEmpty()) {
 										System.out.println("Launching Workspace! " + workspace);
 										launcherTextEntry = null;
+										ptfl = null;
 										currentFrame.dispatchEvent(new WindowEvent(currentFrame, WindowEvent.WINDOW_CLOSING));
-										createMain();
+										createMain(workspace);
 									}
 								}), BorderLayout.SOUTH)));
 	}
 
-	private static void createMain() {
+	private static void createMain(String workspace) {
 		WindowManager.dispatch(window -> window
-				.title("ShuttleGUI"));
+				.title("ShuttleGUI - " + workspace)
+				.onBuild(frame -> {
+					currentFrame = frame;
+				}));
 	}
 
 	private static class PlaceholderTextFocusListener implements FocusListener {
