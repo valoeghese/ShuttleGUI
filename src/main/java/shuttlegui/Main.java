@@ -4,7 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
+import javax.swing.JFrame;
 import javax.swing.JTextField;
 
 import shuttlegui.system.ButtonNode;
@@ -18,10 +21,25 @@ public class Main {
 		createLaunch();
 	}
 
+	public static JTextField launcherTextEntry;
+	public static JFrame currentFrame;
+
 	private static void createLaunch() {
 		WindowManager.dispatch(window -> window
 				.title("ShuttleGUI Launcher")
 				.size(400, 150)
+				.dontExitOnClose()
+				.onBuild(frame -> {
+					currentFrame = frame;
+					frame.addWindowListener(new WindowAdapter() {
+						@Override
+						public void windowClosing(WindowEvent e) {
+							if (launcherTextEntry != null) {
+								System.exit(0);
+							}
+						}
+					});
+				})
 				.child(new PanelNode("Launcher")
 						.setBorderLayout(() -> new BorderLayout(5, 10))
 						.child(new LabelNode()
@@ -30,8 +48,25 @@ public class Main {
 								.onBuild(field -> {
 									field.setForeground(Color.GRAY);
 									field.addFocusListener(new PlaceholderTextFocusListener(field, "name"));
+									launcherTextEntry = field;
 								}), BorderLayout.CENTER)
-						.child(new ButtonNode("Launch"), BorderLayout.SOUTH)));
+						.child(new ButtonNode("Launch")
+								.executes(event -> {
+									launcherTextEntry.requestFocus();
+									String workspace = launcherTextEntry.getText().trim();
+
+									if (!workspace.isEmpty()) {
+										System.out.println("Launching Workspace! " + workspace);
+										launcherTextEntry = null;
+										currentFrame.dispatchEvent(new WindowEvent(currentFrame, WindowEvent.WINDOW_CLOSING));
+										createMain();
+									}
+								}), BorderLayout.SOUTH)));
+	}
+
+	private static void createMain() {
+		WindowManager.dispatch(window -> window
+				.title("ShuttleGUI"));
 	}
 
 	private static class PlaceholderTextFocusListener implements FocusListener {
